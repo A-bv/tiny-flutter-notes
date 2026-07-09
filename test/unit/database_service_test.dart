@@ -23,7 +23,7 @@ void main() {
     expect(await db.watchNotes().first, isEmpty);
   });
 
-  test('upsert inserts a note, and re-upserting the same id updates it', () async {
+  test('upsert inserts a note, then updates the same id in place', () async {
     await db.upsert(row('a', body: 'first'));
     expect((await db.watchNotes().first).single.body, 'first');
 
@@ -34,7 +34,7 @@ void main() {
   });
 
   test('watchNotes returns notes newest first', () async {
-    await db.upsert(row('old', at: DateTime(2026, 1)));
+    await db.upsert(row('old', at: DateTime(2026)));
     await db.upsert(row('new', at: DateTime(2026, 6)));
 
     final ids = (await db.watchNotes().first).map((r) => r.id).toList();
@@ -52,7 +52,7 @@ void main() {
   });
 
   test('pendingNotes filters by status; allNotes returns every row', () async {
-    await db.upsert(row('a', status: 'pending'));
+    await db.upsert(row('a')); // defaults to pending
     await db.upsert(row('b', status: 'synced'));
 
     final pending = (await db.pendingNotes('pending')).map((r) => r.id);
