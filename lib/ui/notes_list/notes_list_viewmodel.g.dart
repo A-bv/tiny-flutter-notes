@@ -52,7 +52,7 @@ final class NotesListViewModelProvider
 }
 
 String _$notesListViewModelHash() =>
-    r'737ded50ea828dd63ff6d0adfe94e3556f92e12e';
+    r'0235d89eeee6053ea7ee6307b9fe8c81a880eb19';
 
 /// The view model for the notes list screen.
 ///

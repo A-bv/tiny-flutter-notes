@@ -31,7 +31,8 @@ void main() {
     final repo = container.read(noteRepositoryProvider);
     await repo.createNote('Buy milk');
     container.listen(notesListViewModelProvider, (_, _) {});
-    final note = (await container.read(notesListViewModelProvider.future)).single;
+    final notes = await container.read(notesListViewModelProvider.future);
+    final note = notes.single;
 
     await container.read(notesListViewModelProvider.notifier).delete(note);
 

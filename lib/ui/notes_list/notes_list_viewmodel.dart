@@ -16,4 +16,10 @@ class NotesListViewModel extends _$NotesListViewModel {
   Stream<List<Note>> build() {
     return ref.watch(noteRepositoryProvider).watchNotes();
   }
+
+  /// Deletes [note]. The repository decides whether to drop it locally or
+  /// tombstone it for the server; the list updates through the stream, so
+  /// there is nothing to do here afterwards.
+  Future<void> delete(Note note) =>
+      ref.read(noteRepositoryProvider).deleteNote(note);
 }
