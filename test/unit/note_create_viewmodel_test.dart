@@ -37,9 +37,11 @@ void main() {
   test('a blank save settles to AsyncError', () async {
     final container = makeContainer();
 
-    await container.read(noteCreateViewModelProvider.notifier).save('   ');
+    final vm = container.read(noteCreateViewModelProvider.notifier);
+    await vm.save('   ');
 
-    expect(container.read(noteCreateViewModelProvider), isA<AsyncError<void>>());
+    final state = container.read(noteCreateViewModelProvider);
+    expect(state, isA<AsyncError<void>>());
   });
 
   test('ignores a save while one is already running', () async {

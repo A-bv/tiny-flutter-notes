@@ -20,6 +20,7 @@ class NoteCreateViewModel extends _$NoteCreateViewModel {
   /// to data (success) or error. `AsyncValue.guard` turns a thrown error
   /// into an [AsyncError] so there is no try/catch to get wrong.
   Future<void> save(String text) async {
+    if (state.isLoading) return;
     state = const AsyncLoading<void>();
     state = await AsyncValue.guard(
       () => ref.read(noteRepositoryProvider).createNote(text),
