@@ -24,11 +24,15 @@ class NoteRepository {
   /// the list updates instantly. Uploading happens later, once the
   /// syncing behaviour is built.
   Future<void> createNote(String text) async {
+    final body = text.trim();
+    if (body.isEmpty) {
+      throw ArgumentError.value(text, 'text', 'A note cannot be empty');
+    }
     final note = Note(
       // A UUID, not a timestamp: two notes created in the same
       // microsecond would otherwise share an id and overwrite each other.
       id: _uuid.v4(),
-      text: text.trim(),
+      text: body,
       createdAt: DateTime.now(),
       syncStatus: SyncStatus.pending,
     );
