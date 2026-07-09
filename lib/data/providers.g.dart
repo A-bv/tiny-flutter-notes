@@ -214,3 +214,45 @@ final class NoteRepositoryProvider
 }
 
 String _$noteRepositoryHash() => r'ab5a64f10685fe33b31bb0122526a5d7a7954a3a';
+
+/// Streams connectivity changes, starting with the current value, so the
+/// list screen can show an offline banner.
+
+@ProviderFor(connectivityStatus)
+final connectivityStatusProvider = ConnectivityStatusProvider._();
+
+/// Streams connectivity changes, starting with the current value, so the
+/// list screen can show an offline banner.
+
+final class ConnectivityStatusProvider
+    extends $FunctionalProvider<AsyncValue<bool>, bool, Stream<bool>>
+    with $FutureModifier<bool>, $StreamProvider<bool> {
+  /// Streams connectivity changes, starting with the current value, so the
+  /// list screen can show an offline banner.
+  ConnectivityStatusProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'connectivityStatusProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$connectivityStatusHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<bool> create(Ref ref) {
+    return connectivityStatus(ref);
+  }
+}
+
+String _$connectivityStatusHash() =>
+    r'ae144aa7fbbc634eabaffd117abed5ae604d15ed';

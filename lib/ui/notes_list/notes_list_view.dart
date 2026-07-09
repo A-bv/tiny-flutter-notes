@@ -1,3 +1,4 @@
+import 'package:field_notes/data/providers.dart';
 import 'package:field_notes/domain/models/note.dart';
 import 'package:field_notes/ui/note_create/note_create_view.dart';
 import 'package:field_notes/ui/notes_list/note_list_item.dart';
@@ -16,6 +17,7 @@ class NotesListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notes = ref.watch(notesListViewModelProvider);
+    final online = ref.watch(connectivityStatusProvider).value ?? true;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Field Notes'),
@@ -29,15 +31,45 @@ class NotesListView extends ConsumerWidget {
           ),
         ],
       ),
-      body: switch (notes) {
-        AsyncData(:final value) => _NotesBody(
-          notes: value,
-          onDelete: (note) =>
-              ref.read(notesListViewModelProvider.notifier).delete(note),
+      body: Column(
+        children: [
+          if (!online) const _OfflineBanner(),
+          Expanded(
+            child: switch (notes) {
+              AsyncData(:final value) => _NotesBody(
+                notes: value,
+                onDelete: (note) =>
+                    ref.read(notesListViewModelProvider.notifier).delete(note),
+              ),
+              AsyncError() => const _ErrorState(),
+              _ => const Center(child: CircularProgressIndicator()),
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OfflineBanner extends StatelessWidget {
+  const _OfflineBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    // A live region so screen readers announce the status change at once.
+    return Semantics(
+      liveRegion: true,
+      child: Container(
+        width: double.infinity,
+        color: scheme.secondaryContainer,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Text(
+          'Offline — changes will sync when reconnected',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: scheme.onSecondaryContainer),
         ),
-        AsyncError() => const _ErrorState(),
-        _ => const Center(child: CircularProgressIndicator()),
-      },
+      ),
     );
   }
 }

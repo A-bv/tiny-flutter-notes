@@ -68,3 +68,12 @@ NoteRepository noteRepository(Ref ref) {
   ref.onDispose(repository.dispose);
   return repository;
 }
+
+/// Streams connectivity changes, starting with the current value, so the
+/// list screen can show an offline banner.
+@riverpod
+Stream<bool> connectivityStatus(Ref ref) async* {
+  final service = ref.watch(connectivityServiceProvider);
+  yield service.isOnline;
+  yield* service.onStatusChange;
+}

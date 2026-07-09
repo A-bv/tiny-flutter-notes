@@ -60,7 +60,7 @@ final class NoteCreateViewModelProvider
 }
 
 String _$noteCreateViewModelHash() =>
-    r'787c14d6ef50520ac88af459eea48c9dd53bc597';
+    r'349d68e920623444f4954cabdbfd831b3828270b';
 
 /// The view model for the create-note screen.
 ///
