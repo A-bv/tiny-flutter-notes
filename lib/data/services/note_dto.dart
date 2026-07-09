@@ -18,6 +18,14 @@ class NoteDto {
   factory NoteDto.fromDomain(Note note) =>
       NoteDto(id: note.id, text: note.text, createdAt: note.createdAt);
 
+  /// Parses a JSON map from the server. Throws if a field is missing or
+  /// the wrong type, so a malformed record fails loudly at the boundary.
+  factory NoteDto.fromJson(Map<String, dynamic> json) => NoteDto(
+    id: json['id'] as String,
+    text: json['text'] as String,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+  );
+
   /// The note id.
   final String id;
 
@@ -33,4 +41,13 @@ class NoteDto {
     'text': text,
     'createdAt': createdAt.toUtc().toIso8601String(),
   };
+
+  /// Converts to a domain [Note], marked synced because it came from the
+  /// server.
+  Note toDomain() => Note(
+    id: id,
+    text: text,
+    createdAt: createdAt,
+    syncStatus: SyncStatus.synced,
+  );
 }
