@@ -40,4 +40,14 @@ void main() {
     final ids = (await db.watchNotes().first).map((r) => r.id).toList();
     expect(ids, ['new', 'old']);
   });
+
+  test('deleteById removes only the matching note', () async {
+    await db.upsert(row('a'));
+    await db.upsert(row('b'));
+
+    await db.deleteById('a');
+
+    final ids = (await db.watchNotes().first).map((r) => r.id).toList();
+    expect(ids, ['b']);
+  });
 }
