@@ -28,6 +28,8 @@ class NoteRepository {
   final ConnectivityService _connectivity;
   final Uuid _uuid = const Uuid();
 
+  Future<void> _syncQueue = Future<void>.value();
+
   /// Streams all notes, newest first, mapped from database rows to the
   /// shared domain [Note]. The UI subscribes to this and nothing else.
   Stream<List<Note>> watchNotes() {
@@ -79,9 +81,20 @@ class NoteRepository {
     }
   }
 
-  /// Runs one sync pass: uploads every pending note, then marks each
-  /// synced locally once the server has it. Does nothing while offline.
-  Future<void> syncPending() async {
+  /// Runs one full sync pass: uploads pending notes, flushes tombstoned
+  /// deletions, then pulls unknown server notes. Does nothing while
+  /// offline.
+  ///
+  /// Passes are serialized: a call made while one is running queues a
+  /// fresh pass behind it, so nothing runs twice at once and no trigger
+  /// is lost when connectivity flaps.
+  Future<void> syncPending() {
+    final pass = _syncQueue.then((_) => _syncOnce());
+    _syncQueue = pass.then((_) {}, onError: (Object _) {});
+    return pass;
+  }
+
+  Future<void> _syncOnce() async {
     if (!_connectivity.isOnline) return;
     final toUpload = await _db.pendingNotes(SyncStatus.pending.name);
     for (final row in toUpload) {
