@@ -27,5 +27,22 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-      - name: Run tests
-        run: flutter test
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      # Gate on hand-written source only: generated *.g.dart files are
+      # tool output and would inflate the number. Pure awk, so no lcov
+      # binary is needed on the runner.
+      - name: Enforce 85% coverage on hand-written source
+        run: |
+          awk '
+            /^SF:/ { skip = ($0 ~ /\.g\.dart/) }
+            /^LF:/ && !skip { lf += substr($0, 4) }
+            /^LH:/ && !skip { lh += substr($0, 4) }
+            END {
+              if (lf == 0) { print "No coverage data"; exit 1 }
+              pct = 100 * lh / lf
+              printf "Hand-written coverage: %.1f%% (%d/%d)\n", pct, lh, lf
+              if (pct < 85) { print "Below the 85% floor"; exit 1 }
+            }
+          ' coverage/lcov.info
