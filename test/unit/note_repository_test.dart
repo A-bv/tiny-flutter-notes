@@ -85,4 +85,16 @@ void main() {
 
     expect(api.uploaded.single.text, 'Buy milk');
   });
+
+  test('deleteNote drops a never-synced note without the server', () async {
+    connectivity.isOnline = false;
+    final repo = makeRepository();
+    await repo.createNote('Buy milk');
+    final note = (await repo.watchNotes().first).single;
+
+    await repo.deleteNote(note);
+
+    expect(await repo.watchNotes().first, isEmpty);
+    expect(api.deleted, isEmpty);
+  });
 }
