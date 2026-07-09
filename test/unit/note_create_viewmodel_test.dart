@@ -29,7 +29,8 @@ void main() {
     await container.read(noteCreateViewModelProvider.notifier).save('Buy milk');
 
     expect(container.read(noteCreateViewModelProvider), isA<AsyncData<void>>());
-    final notes = await container.read(noteRepositoryProvider).watchNotes().first;
+    final repo = container.read(noteRepositoryProvider);
+    final notes = await repo.watchNotes().first;
     expect(notes.single.text, 'Buy milk');
   });
 }

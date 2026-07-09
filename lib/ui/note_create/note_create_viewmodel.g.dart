@@ -12,6 +12,8 @@ part of 'note_create_viewmodel.dart';
 ///
 /// Its state is an [AsyncValue] describing the save action, so the view
 /// can react to running / done / error without holding any logic itself.
+/// On success the note is saved locally at once; syncing to the server
+/// happens in the background (see `NoteRepository`).
 
 @ProviderFor(NoteCreateViewModel)
 final noteCreateViewModelProvider = NoteCreateViewModelProvider._();
@@ -20,12 +22,16 @@ final noteCreateViewModelProvider = NoteCreateViewModelProvider._();
 ///
 /// Its state is an [AsyncValue] describing the save action, so the view
 /// can react to running / done / error without holding any logic itself.
+/// On success the note is saved locally at once; syncing to the server
+/// happens in the background (see `NoteRepository`).
 final class NoteCreateViewModelProvider
     extends $NotifierProvider<NoteCreateViewModel, AsyncValue<void>> {
   /// The view model for the create-note screen.
   ///
   /// Its state is an [AsyncValue] describing the save action, so the view
   /// can react to running / done / error without holding any logic itself.
+  /// On success the note is saved locally at once; syncing to the server
+  /// happens in the background (see `NoteRepository`).
   NoteCreateViewModelProvider._()
     : super(
         from: null,
@@ -54,12 +60,14 @@ final class NoteCreateViewModelProvider
 }
 
 String _$noteCreateViewModelHash() =>
-    r'00ab02f253d13a4cf633ed412e45c2586dc2aee1';
+    r'787c14d6ef50520ac88af459eea48c9dd53bc597';
 
 /// The view model for the create-note screen.
 ///
 /// Its state is an [AsyncValue] describing the save action, so the view
 /// can react to running / done / error without holding any logic itself.
+/// On success the note is saved locally at once; syncing to the server
+/// happens in the background (see `NoteRepository`).
 
 abstract class _$NoteCreateViewModel extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();
