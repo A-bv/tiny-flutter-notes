@@ -19,6 +19,8 @@ void main() {
     final container = makeContainer();
     await container.read(noteRepositoryProvider).createNote('Buy milk');
 
+    // Keep the auto-dispose provider mounted, exactly as a widget would.
+    container.listen(notesListViewModelProvider, (_, _) {});
     final notes = await container.read(notesListViewModelProvider.future);
 
     expect(notes.single.text, 'Buy milk');
