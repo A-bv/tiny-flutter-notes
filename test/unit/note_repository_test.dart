@@ -1,15 +1,32 @@
 import 'package:field_notes/data/repositories/note_repository.dart';
 import 'package:field_notes/data/services/database_service.dart';
+import 'package:field_notes/data/services/fake_note_api.dart';
 import 'package:field_notes/domain/models/note.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late DatabaseService db;
+  late FakeNoteApi api;
 
-  setUp(() => db = DatabaseService.memory());
+  setUp(() {
+    db = DatabaseService.memory();
+    api = FakeNoteApi();
+  });
   tearDown(() => db.close());
 
-  NoteRepository makeRepository() => NoteRepository(database: db);
+  NoteRepository makeRepository() =>
+      NoteRepository(database: db, api: api);
+
+  Future<Note> onlyNote() async => (await db.watchNotes().first)
+      .map(
+        (r) => Note(
+          id: r.id,
+          text: r.body,
+          createdAt: r.createdAt,
+          syncStatus: SyncStatus.values.asNameMap()[r.syncStatus]!,
+        ),
+      )
+      .single;
 
   test('createNote saves a note locally as pending', () async {
     final repo = makeRepository();
@@ -27,5 +44,15 @@ void main() {
 
     await expectLater(() => repo.createNote('   '), throwsArgumentError);
     expect(await repo.watchNotes().first, isEmpty);
+  });
+
+  test('syncPending uploads pending notes and marks them synced', () async {
+    final repo = makeRepository();
+    await repo.createNote('Buy milk');
+
+    await repo.syncPending();
+
+    expect(api.uploaded.single.text, 'Buy milk');
+    expect((await onlyNote()).syncStatus, SyncStatus.synced);
   });
 }
