@@ -1,4 +1,5 @@
 import 'package:field_notes/data/repositories/note_repository.dart';
+import 'package:field_notes/data/services/connectivity_service.dart';
 import 'package:field_notes/data/services/database_service.dart';
 import 'package:field_notes/data/services/fake_note_api.dart';
 import 'package:field_notes/domain/models/note.dart';
@@ -7,15 +8,20 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   late DatabaseService db;
   late FakeNoteApi api;
+  late ConnectivityService connectivity;
 
   setUp(() {
     db = DatabaseService.memory();
     api = FakeNoteApi();
+    connectivity = ConnectivityService();
   });
-  tearDown(() => db.close());
+  tearDown(() async {
+    connectivity.dispose();
+    await db.close();
+  });
 
   NoteRepository makeRepository() =>
-      NoteRepository(database: db, api: api);
+      NoteRepository(database: db, api: api, connectivity: connectivity);
 
   Future<Note> onlyNote() async => (await db.watchNotes().first)
       .map(
@@ -54,5 +60,16 @@ void main() {
 
     expect(api.uploaded.single.text, 'Buy milk');
     expect((await onlyNote()).syncStatus, SyncStatus.synced);
+  });
+
+  test('syncPending does nothing while offline', () async {
+    connectivity.isOnline = false;
+    final repo = makeRepository();
+    await repo.createNote('Buy milk');
+
+    await repo.syncPending();
+
+    expect(api.uploaded, isEmpty);
+    expect((await onlyNote()).syncStatus, SyncStatus.pending);
   });
 }
