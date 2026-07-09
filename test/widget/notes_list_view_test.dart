@@ -3,6 +3,7 @@ import 'package:field_notes/data/services/connectivity_service.dart';
 import 'package:field_notes/data/services/database_service.dart';
 import 'package:field_notes/ui/notes_list/notes_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -71,5 +72,19 @@ void main() {
 
       expect(find.text('Buy milk'), findsNothing);
     });
+  });
+
+  testWidgets('announces an offline banner to screen readers', (tester) async {
+    final handle = tester.ensureSemantics();
+    await withList(tester, (container) async {
+      await container.read(noteRepositoryProvider).watchNotes().first;
+      await tester.pumpAndSettle();
+
+      final banner = find.text('Offline — changes will sync when reconnected');
+      expect(banner, findsOneWidget);
+      final node = tester.getSemantics(banner);
+      expect(node.hasFlag(SemanticsFlag.isLiveRegion), isTrue);
+    });
+    handle.dispose();
   });
 }
