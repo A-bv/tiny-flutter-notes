@@ -32,4 +32,12 @@ void main() {
     expect(rows, hasLength(1));
     expect(rows.single.body, 'second');
   });
+
+  test('watchNotes returns notes newest first', () async {
+    await db.upsert(row('old', at: DateTime(2026, 1)));
+    await db.upsert(row('new', at: DateTime(2026, 6)));
+
+    final ids = (await db.watchNotes().first).map((r) => r.id).toList();
+    expect(ids, ['new', 'old']);
+  });
 }
