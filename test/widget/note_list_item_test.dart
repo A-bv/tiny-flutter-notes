@@ -13,7 +13,9 @@ void main() {
 
   Future<void> pumpItem(WidgetTester tester, Note note) => tester.pumpWidget(
     MaterialApp(
-      home: Scaffold(body: NoteListItem(note: note, onDelete: () {})),
+      home: Scaffold(
+        body: NoteListItem(note: note, onDelete: () {}),
+      ),
     ),
   );
 

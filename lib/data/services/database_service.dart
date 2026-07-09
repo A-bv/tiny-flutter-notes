@@ -45,9 +45,9 @@ class DatabaseService extends _$DatabaseService {
   /// Streams every stored note as raw rows, newest first; the
   /// repository maps them to the shared domain `Note`.
   Stream<List<LocalNote>> watchNotes() {
-    return (select(localNotes)
-          ..orderBy([(n) => OrderingTerm.desc(n.createdAt)]))
-        .watch();
+    return (select(
+      localNotes,
+    )..orderBy([(n) => OrderingTerm.desc(n.createdAt)])).watch();
   }
 
   /// Inserts [note], or replaces the existing row with the same id.
