@@ -2,6 +2,7 @@ import 'package:field_notes/data/repositories/note_repository.dart';
 import 'package:field_notes/data/services/connectivity_service.dart';
 import 'package:field_notes/data/services/database_service.dart';
 import 'package:field_notes/data/services/fake_note_api.dart';
+import 'package:field_notes/data/services/note_api.dart';
 import 'package:field_notes/domain/models/note.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -153,5 +154,20 @@ void main() {
     await Future.wait([repo.syncPending(), repo.syncPending()]);
 
     expect(api.uploaded, hasLength(1));
+  });
+
+  test('a failed sync is reported on syncErrors', () async {
+    connectivity.isOnline = false;
+    final repo = makeRepository();
+    await repo.createNote('Buy milk');
+    api.failure = const ApiException('Server unavailable');
+    connectivity.isOnline = true;
+
+    final errors = <String?>[];
+    final sub = repo.syncErrors.listen(errors.add);
+    await repo.syncPending();
+    await sub.cancel();
+
+    expect(errors, contains('Server unavailable'));
   });
 }
