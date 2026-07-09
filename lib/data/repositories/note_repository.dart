@@ -96,6 +96,15 @@ class NoteRepository {
       await _api.delete(row.id);
       await _db.deleteById(row.id);
     }
+    // Pull: adopt server notes this device has never seen. Additive on
+    // purpose — at last-write-wins scope, deletions made elsewhere do
+    // not propagate here (that needs server-side tombstones).
+    final known = (await _db.allNotes()).map((row) => row.id).toSet();
+    for (final note in await _api.fetchAll()) {
+      if (!known.contains(note.id)) {
+        await _db.upsert(_toCompanion(note));
+      }
+    }
   }
 
   Note _toDomain(LocalNote row) {
