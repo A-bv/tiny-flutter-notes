@@ -23,7 +23,7 @@ void main() {
         child: const MaterialApp(home: NotesListView()),
       ),
     );
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.textContaining('Something went wrong'), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsNothing);

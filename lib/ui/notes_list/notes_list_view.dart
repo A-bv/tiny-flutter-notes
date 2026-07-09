@@ -19,8 +19,27 @@ class NotesListView extends ConsumerWidget {
       appBar: AppBar(title: const Text('Field Notes')),
       body: switch (notes) {
         AsyncData(:final value) => _NotesBody(notes: value),
+        AsyncError() => const _ErrorState(),
         _ => const Center(child: CircularProgressIndicator()),
       },
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(24),
+        child: Text(
+          "Something went wrong loading your notes. They're safe on this "
+          'device — pull to refresh or reopen the app.',
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }
