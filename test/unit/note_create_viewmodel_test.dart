@@ -33,4 +33,22 @@ void main() {
     final notes = await repo.watchNotes().first;
     expect(notes.single.text, 'Buy milk');
   });
+
+  test('a blank save settles to AsyncError', () async {
+    final container = makeContainer();
+
+    await container.read(noteCreateViewModelProvider.notifier).save('   ');
+
+    expect(container.read(noteCreateViewModelProvider), isA<AsyncError<void>>());
+  });
+
+  test('ignores a save while one is already running', () async {
+    final container = makeContainer();
+    final vm = container.read(noteCreateViewModelProvider.notifier);
+
+    await Future.wait([vm.save('first'), vm.save('second')]);
+
+    final repo = container.read(noteRepositoryProvider);
+    expect(await repo.watchNotes().first, hasLength(1));
+  });
 }
