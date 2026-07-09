@@ -11,26 +11,23 @@ void main() {
     syncStatus: status,
   );
 
+  Widget row(SyncStatus status) => Material(
+    child: SizedBox(
+      width: 360,
+      child: NoteListItem(note: noteWith(status), onDelete: () {}),
+    ),
+  );
+
+  // goldenTest registers the test and returns a Future the framework
+  // awaits internally; there is nothing to await here.
+  // ignore: discarded_futures
   goldenTest(
     'NoteListItem renders each sync status',
     fileName: 'note_list_item',
     builder: () => GoldenTestGroup(
-      columnWidthBuilder: (_) => const FlexColumnWidth(),
       children: [
-        GoldenTestScenario(
-          name: 'pending',
-          child: SizedBox(
-            width: 360,
-            child: NoteListItem(note: noteWith(SyncStatus.pending), onDelete: () {}),
-          ),
-        ),
-        GoldenTestScenario(
-          name: 'synced',
-          child: SizedBox(
-            width: 360,
-            child: NoteListItem(note: noteWith(SyncStatus.synced), onDelete: () {}),
-          ),
-        ),
+        GoldenTestScenario(name: 'pending', child: row(SyncStatus.pending)),
+        GoldenTestScenario(name: 'synced', child: row(SyncStatus.synced)),
       ],
     ),
   );
