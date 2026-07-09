@@ -21,8 +21,15 @@ void main() {
     await db.close();
   });
 
-  NoteRepository makeRepository() =>
-      NoteRepository(database: db, api: api, connectivity: connectivity);
+  NoteRepository makeRepository() {
+    final repo = NoteRepository(
+      database: db,
+      api: api,
+      connectivity: connectivity,
+    );
+    addTearDown(repo.dispose);
+    return repo;
+  }
 
   Future<Note> onlyNote() async => (await db.watchNotes().first)
       .map(
@@ -170,5 +177,16 @@ void main() {
     await sub.cancel();
 
     expect(errors, contains('Server unavailable'));
+  });
+
+  test('reconnecting flushes queued notes', () async {
+    connectivity.isOnline = false;
+    final repo = makeRepository();
+    await repo.createNote('Buy milk'); // pending while offline
+
+    connectivity.isOnline = true; // the repository should notice
+    await pumpEventQueue();
+
+    expect(api.uploaded.single.text, 'Buy milk');
   });
 }
