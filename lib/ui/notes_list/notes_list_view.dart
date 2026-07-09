@@ -1,4 +1,5 @@
 import 'package:field_notes/domain/models/note.dart';
+import 'package:field_notes/ui/note_create/note_create_view.dart';
 import 'package:field_notes/ui/notes_list/note_list_item.dart';
 import 'package:field_notes/ui/notes_list/notes_list_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,18 @@ class NotesListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notes = ref.watch(notesListViewModelProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Field Notes')),
+      appBar: AppBar(
+        title: const Text('Field Notes'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: 'New note',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const NoteCreateView()),
+            ),
+          ),
+        ],
+      ),
       body: switch (notes) {
         AsyncData(:final value) => _NotesBody(notes: value),
         AsyncError() => const _ErrorState(),
