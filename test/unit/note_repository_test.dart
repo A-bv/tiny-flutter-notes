@@ -53,9 +53,13 @@ void main() {
   });
 
   test('syncPending uploads pending notes and marks them synced', () async {
+    // Start offline so createNote does not auto-trigger a sync; this
+    // keeps the test focused on syncPending as a unit.
+    connectivity.isOnline = false;
     final repo = makeRepository();
     await repo.createNote('Buy milk');
 
+    connectivity.isOnline = true;
     await repo.syncPending();
 
     expect(api.uploaded.single.text, 'Buy milk');

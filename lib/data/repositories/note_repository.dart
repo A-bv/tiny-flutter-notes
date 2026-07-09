@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:field_notes/data/services/connectivity_service.dart';
 import 'package:field_notes/data/services/database_service.dart';
 import 'package:field_notes/data/services/note_api.dart';
@@ -48,6 +50,9 @@ class NoteRepository {
       syncStatus: SyncStatus.pending,
     );
     await _db.upsert(_toCompanion(note));
+    // Fire-and-forget: the save is done once the note is on the device;
+    // the upload happens in the background so the UI never waits on it.
+    if (_connectivity.isOnline) unawaited(syncPending());
   }
 
   /// Runs one sync pass: uploads every pending note, then marks each
