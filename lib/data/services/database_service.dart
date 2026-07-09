@@ -60,6 +60,15 @@ class DatabaseService extends _$DatabaseService {
   /// Deletes the note with the given [id], if any.
   Future<void> deleteById(String id) =>
       (delete(localNotes)..where((n) => n.id.equals(id))).go();
+
+  /// Returns every row whose sync status equals [status] — the sync
+  /// worker's queue of notes to upload or deletions to flush.
+  Future<List<LocalNote>> pendingNotes(String status) =>
+      (select(localNotes)..where((n) => n.syncStatus.equals(status))).get();
+
+  /// Returns every stored row regardless of status, so a pull can tell
+  /// which server notes this device already has.
+  Future<List<LocalNote>> allNotes() => select(localNotes).get();
 }
 
 QueryExecutor _open() => driftDatabase(name: 'field_notes');
