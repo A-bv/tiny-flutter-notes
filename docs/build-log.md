@@ -12,12 +12,12 @@ If you only read one doc to judge *how* this was made, read this one.
 
 Features arrive in pairs, never in one lump:
 
-| Commit | Adds | New test? |
-|---|---|---|
-| 🔴 `test: …` | a check that fails because the feature doesn't exist yet | ✅ the test |
-| 🟢 `feat: …` | the least code that makes that check pass | ❌ makes the red go green |
-| 🔵 `refactor: …` | tidies code while the tests stay green | ❌ |
-| `chore/ci/docs:` | setup, plumbing, documentation | ❌ (marked `non-TDD`) |
+| Commit | Adds |
+|---|---|
+| 🔴 `test: …` | a check that fails because the feature doesn't exist yet |
+| 🟢 `feat: …` | the least code that makes that check pass |
+| 🔵 `refactor: …` | tidies code while the tests stay green |
+| `chore/ci/docs:` | setup, plumbing, documentation (non-TDD) |
 
 So a feature is always **🔴 describe it as a test → 🟢 make it real.** Read the
 history and you can watch each behaviour be specified, then satisfied.
