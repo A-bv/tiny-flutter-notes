@@ -19,4 +19,18 @@ void main() {
       'createdAt': '2026-07-09T10:30:00.000Z',
     });
   });
+
+  test('a wire note parses into a synced domain note', () {
+    final parsed = NoteDto.fromJson({
+      'id': 'a',
+      'text': 'Buy milk',
+      'createdAt': '2026-07-09T10:30:00.000Z',
+    }).toDomain();
+
+    expect(parsed.id, 'a');
+    expect(parsed.text, 'Buy milk');
+    expect(parsed.createdAt, DateTime.utc(2026, 7, 9, 10, 30));
+    // A note that came from the server is, by definition, synced.
+    expect(parsed.syncStatus, SyncStatus.synced);
+  });
 }
