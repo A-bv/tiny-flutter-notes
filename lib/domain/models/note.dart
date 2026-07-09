@@ -44,6 +44,19 @@ class Note {
   /// Whether this note has been uploaded to the server yet.
   final SyncStatus syncStatus;
 
+  /// Returns a copy of this note with the given fields replaced.
+  ///
+  /// Only [syncStatus] is replaceable because it is the only field that
+  /// changes during a note's life (pending -> synced).
+  Note copyWith({SyncStatus? syncStatus}) {
+    return Note(
+      id: id,
+      text: text,
+      createdAt: createdAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+    );
+  }
+
   @override
   bool operator ==(Object other) {
     return other is Note &&
