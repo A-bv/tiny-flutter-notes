@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:field_notes/data/services/http_note_api.dart';
+import 'package:field_notes/data/services/note_api.dart';
 import 'package:field_notes/domain/models/note.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -103,5 +104,14 @@ void main() {
     final request = recorder.requests.single;
     expect(request.method, 'DELETE');
     expect(request.path, '/notes/abc');
+  });
+
+  test('a network failure surfaces as an ApiException', () async {
+    recorder.failure = DioException.connectionError(
+      requestOptions: RequestOptions(path: '/notes'),
+      reason: 'offline',
+    );
+
+    await expectLater(api.fetchAll, throwsA(isA<ApiException>()));
   });
 }
