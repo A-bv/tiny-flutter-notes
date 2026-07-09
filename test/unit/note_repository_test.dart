@@ -143,4 +143,15 @@ void main() {
     final texts = (await repo.watchNotes().first).map((n) => n.text);
     expect(texts, contains('From another device'));
   });
+
+  test('overlapping sync passes upload a note only once', () async {
+    connectivity.isOnline = false;
+    final repo = makeRepository();
+    await repo.createNote('Buy milk');
+    connectivity.isOnline = true;
+
+    await Future.wait([repo.syncPending(), repo.syncPending()]);
+
+    expect(api.uploaded, hasLength(1));
+  });
 }
