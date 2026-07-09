@@ -77,4 +77,19 @@ void main() {
     expect(notes.single.id, 'a');
     expect(notes.single.syncStatus, SyncStatus.synced);
   });
+
+  test('fetchAll skips a malformed record and keeps the rest', () async {
+    recorder.onResolve = (options) => Response<dynamic>(
+      requestOptions: options,
+      statusCode: 200,
+      data: <dynamic>[
+        {'id': 'a', 'text': 'Buy milk', 'createdAt': '2026-07-09T00:00:00.000Z'},
+        {'id': 'b', 'oops': 'no text or date'}, // malformed
+      ],
+    );
+
+    final notes = await api.fetchAll();
+
+    expect(notes.map((n) => n.id), ['a']);
+  });
 }
