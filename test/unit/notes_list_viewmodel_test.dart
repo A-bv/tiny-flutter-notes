@@ -25,4 +25,16 @@ void main() {
 
     expect(notes.single.text, 'Buy milk');
   });
+
+  test('delete forwards to the repository', () async {
+    final container = makeContainer();
+    final repo = container.read(noteRepositoryProvider);
+    await repo.createNote('Buy milk');
+    container.listen(notesListViewModelProvider, (_, _) {});
+    final note = (await container.read(notesListViewModelProvider.future)).single;
+
+    await container.read(notesListViewModelProvider.notifier).delete(note);
+
+    expect(await repo.watchNotes().first, isEmpty);
+  });
 }
