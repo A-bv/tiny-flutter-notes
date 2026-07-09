@@ -45,6 +45,13 @@ class DatabaseService extends _$DatabaseService {
   /// Streams every stored note as raw rows; the repository maps them to
   /// the shared domain `Note`.
   Stream<List<LocalNote>> watchNotes() => select(localNotes).watch();
+
+  /// Inserts [note], or replaces the existing row with the same id.
+  ///
+  /// One method for both create and update keeps the repository simple:
+  /// it never has to ask whether a note already exists.
+  Future<void> upsert(LocalNotesCompanion note) =>
+      into(localNotes).insertOnConflictUpdate(note);
 }
 
 QueryExecutor _open() => driftDatabase(name: 'field_notes');
