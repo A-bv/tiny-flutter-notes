@@ -166,6 +166,7 @@ void main() {
     final errors = <String?>[];
     final sub = repo.syncErrors.listen(errors.add);
     await repo.syncPending();
+    await pumpEventQueue();
     await sub.cancel();
 
     expect(errors, contains('Server unavailable'));

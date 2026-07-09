@@ -29,6 +29,12 @@ class NoteRepository {
   final Uuid _uuid = const Uuid();
 
   Future<void> _syncQueue = Future<void>.value();
+  final StreamController<String?> _syncErrors =
+      StreamController<String?>.broadcast();
+
+  /// Emits an error message when a sync pass fails, or `null` when one
+  /// succeeds. The list screen turns this into a banner.
+  Stream<String?> get syncErrors => _syncErrors.stream;
 
   /// Streams all notes, newest first, mapped from database rows to the
   /// shared domain [Note]. The UI subscribes to this and nothing else.
@@ -96,28 +102,42 @@ class NoteRepository {
 
   Future<void> _syncOnce() async {
     if (!_connectivity.isOnline) return;
-    final toUpload = await _db.pendingNotes(SyncStatus.pending.name);
-    for (final row in toUpload) {
-      final note = _toDomain(row);
-      await _api.upload(note);
-      await _db.upsert(
-        _toCompanion(note.copyWith(syncStatus: SyncStatus.synced)),
-      );
-    }
-    final toDelete = await _db.pendingNotes(SyncStatus.pendingDeletion.name);
-    for (final row in toDelete) {
-      await _api.delete(row.id);
-      await _db.deleteById(row.id);
-    }
-    // Pull: adopt server notes this device has never seen. Additive on
-    // purpose — at last-write-wins scope, deletions made elsewhere do
-    // not propagate here (that needs server-side tombstones).
-    final known = (await _db.allNotes()).map((row) => row.id).toSet();
-    for (final note in await _api.fetchAll()) {
-      if (!known.contains(note.id)) {
-        await _db.upsert(_toCompanion(note));
+    try {
+      final toUpload = await _db.pendingNotes(SyncStatus.pending.name);
+      for (final row in toUpload) {
+        final note = _toDomain(row);
+        await _api.upload(note);
+        await _db.upsert(
+          _toCompanion(note.copyWith(syncStatus: SyncStatus.synced)),
+        );
       }
+      final toDelete = await _db.pendingNotes(SyncStatus.pendingDeletion.name);
+      for (final row in toDelete) {
+        await _api.delete(row.id);
+        await _db.deleteById(row.id);
+      }
+      // Pull: adopt server notes this device has never seen. Additive on
+      // purpose — at last-write-wins scope, deletions made elsewhere do
+      // not propagate here (that needs server-side tombstones).
+      final known = (await _db.allNotes()).map((row) => row.id).toSet();
+      for (final note in await _api.fetchAll()) {
+        if (!known.contains(note.id)) {
+          await _db.upsert(_toCompanion(note));
+        }
+      }
+      _report(null);
+    } on ApiException catch (error) {
+      _report(error.message);
+    } on Object catch (error) {
+      // Anything unexpected (a database fault, a bug) surfaces on the
+      // banner rather than becoming an uncaught async error — these run
+      // fire-and-forget, so there is no caller to catch them.
+      _report('Sync failed: $error');
     }
+  }
+
+  void _report(String? message) {
+    if (!_syncErrors.isClosed) _syncErrors.add(message);
   }
 
   Note _toDomain(LocalNote row) {
