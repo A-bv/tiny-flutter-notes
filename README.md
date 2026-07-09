@@ -130,6 +130,7 @@ hand-written source** (generated `*.g.dart` excluded).
 
 ## More
 
+- [docs/build-log.md](docs/build-log.md) — every commit classified by layer, and which framework each introduced.
 - [docs/BUILD_GUIDE.md](docs/BUILD_GUIDE.md) — build this app from scratch, step by step.
 - [docs/decisions.md](docs/decisions.md) — what was deliberately *not* built, and why.
 - [docs/quality-checklist.md](docs/quality-checklist.md) — every element of a high-quality Flutter app, and where this one stands.
