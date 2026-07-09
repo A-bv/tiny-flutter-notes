@@ -21,7 +21,9 @@ class HttpNoteApi implements NoteApi {
   }
 
   @override
-  Future<void> delete(String id) => throw UnimplementedError();
+  Future<void> delete(String id) async {
+    await _dio.delete<void>('/notes/$id');
+  }
 
   @override
   Future<List<Note>> fetchAll() async {
