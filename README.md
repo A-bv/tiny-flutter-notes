@@ -50,6 +50,21 @@ official Flutter guidance — MVVM):
   domain/  Note, SyncStatus               (pure Dart, no Flutter)
 ```
 
+And the same layers as a runtime flow — how a note travels, offline-first:
+
+```
+   tap "Save"
+       │
+       ▼
+   view model ──▶ repository ──┬──▶ Drift DB        saved at once as "pending";
+                               │       │            the UI re-renders from the
+                               │       └─▶ stream    database it watches
+                               │
+                               └──▶ NoteApi ──▶ server   in the background:
+                                    (dio)                "pending" ➜ "synced"
+                                    skipped offline, retried on reconnect
+```
+
 Three rules hold it together: the local database is the source of truth
 (the UI only ever *watches* it, which is what makes the app work
 offline); dependencies point one way (ui → data → domain); and widgets
