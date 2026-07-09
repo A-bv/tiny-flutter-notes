@@ -26,10 +26,16 @@ class HttpNoteApi implements NoteApi {
   @override
   Future<List<Note>> fetchAll() async {
     final response = await _dio.get<List<dynamic>>('/notes');
-    return (response.data ?? <dynamic>[])
-        .map(
-          (item) => NoteDto.fromJson(item as Map<String, dynamic>).toDomain(),
-        )
-        .toList();
+    final notes = <Note>[];
+    for (final item in response.data ?? <dynamic>[]) {
+      try {
+        notes.add(NoteDto.fromJson(item as Map<String, dynamic>).toDomain());
+      } on Object {
+        // One malformed record must not sink the batch: skip it and keep
+        // adopting the rest. The record is simply ignored.
+        continue;
+      }
+    }
+    return notes;
   }
 }

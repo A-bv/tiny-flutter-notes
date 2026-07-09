@@ -83,7 +83,11 @@ void main() {
       requestOptions: options,
       statusCode: 200,
       data: <dynamic>[
-        {'id': 'a', 'text': 'Buy milk', 'createdAt': '2026-07-09T00:00:00.000Z'},
+        {
+          'id': 'a',
+          'text': 'Buy milk',
+          'createdAt': '2026-07-09T00:00:00.000Z',
+        },
         {'id': 'b', 'oops': 'no text or date'}, // malformed
       ],
     );
