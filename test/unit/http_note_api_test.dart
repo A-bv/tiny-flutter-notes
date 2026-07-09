@@ -56,4 +56,25 @@ void main() {
       'createdAt': '2026-07-09T00:00:00.000Z',
     });
   });
+
+  test('fetchAll GETs /notes and maps them to domain notes', () async {
+    recorder.onResolve = (options) => Response<dynamic>(
+      requestOptions: options,
+      statusCode: 200,
+      data: <dynamic>[
+        {
+          'id': 'a',
+          'text': 'Buy milk',
+          'createdAt': '2026-07-09T00:00:00.000Z',
+        },
+      ],
+    );
+
+    final notes = await api.fetchAll();
+
+    expect(recorder.requests.single.method, 'GET');
+    expect(recorder.requests.single.path, '/notes');
+    expect(notes.single.id, 'a');
+    expect(notes.single.syncStatus, SyncStatus.synced);
+  });
 }
