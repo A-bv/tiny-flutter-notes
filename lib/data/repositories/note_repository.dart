@@ -1,4 +1,5 @@
 import 'package:field_notes/data/services/database_service.dart';
+import 'package:field_notes/data/services/note_api.dart';
 import 'package:field_notes/domain/models/note.dart';
 import 'package:uuid/uuid.dart';
 
@@ -6,13 +7,16 @@ import 'package:uuid/uuid.dart';
 /// the app.
 ///
 /// The UI only ever watches [watchNotes]; the local database is the
-/// source of truth. Collaborators (a note API, connectivity) are added
-/// to this class as the syncing behaviour that needs them is built.
+/// source of truth. Collaborators (connectivity) are added to this class
+/// as the syncing behaviour that needs them is built.
 class NoteRepository {
-  /// Creates the repository over the on-device [database].
-  NoteRepository({required DatabaseService database}) : _db = database;
+  /// Creates the repository over the on-device [database] and [api].
+  NoteRepository({required DatabaseService database, required NoteApi api})
+    : _db = database,
+      _api = api;
 
   final DatabaseService _db;
+  final NoteApi _api;
   final Uuid _uuid = const Uuid();
 
   /// Streams all notes, newest first, mapped from database rows to the
@@ -37,6 +41,19 @@ class NoteRepository {
       syncStatus: SyncStatus.pending,
     );
     await _db.upsert(_toCompanion(note));
+  }
+
+  /// Runs one sync pass: uploads every pending note, then marks each
+  /// synced locally once the server has it.
+  Future<void> syncPending() async {
+    final toUpload = await _db.pendingNotes(SyncStatus.pending.name);
+    for (final row in toUpload) {
+      final note = _toDomain(row);
+      await _api.upload(note);
+      await _db.upsert(
+        _toCompanion(note.copyWith(syncStatus: SyncStatus.synced)),
+      );
+    }
   }
 
   Note _toDomain(LocalNote row) {
