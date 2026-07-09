@@ -56,6 +56,10 @@ class DatabaseService extends _$DatabaseService {
   /// it never has to ask whether a note already exists.
   Future<void> upsert(LocalNotesCompanion note) =>
       into(localNotes).insertOnConflictUpdate(note);
+
+  /// Deletes the note with the given [id], if any.
+  Future<void> deleteById(String id) =>
+      (delete(localNotes)..where((n) => n.id.equals(id))).go();
 }
 
 QueryExecutor _open() => driftDatabase(name: 'field_notes');
