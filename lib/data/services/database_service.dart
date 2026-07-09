@@ -42,9 +42,13 @@ class DatabaseService extends _$DatabaseService {
   @override
   int get schemaVersion => 1;
 
-  /// Streams every stored note as raw rows; the repository maps them to
-  /// the shared domain `Note`.
-  Stream<List<LocalNote>> watchNotes() => select(localNotes).watch();
+  /// Streams every stored note as raw rows, newest first; the
+  /// repository maps them to the shared domain `Note`.
+  Stream<List<LocalNote>> watchNotes() {
+    return (select(localNotes)
+          ..orderBy([(n) => OrderingTerm.desc(n.createdAt)]))
+        .watch();
+  }
 
   /// Inserts [note], or replaces the existing row with the same id.
   ///
