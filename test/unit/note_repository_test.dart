@@ -126,4 +126,21 @@ void main() {
     expect(api.deleted, [synced.id]);
     expect(await db.allNotes(), isEmpty);
   });
+
+  test('syncPending adopts server notes the device does not have', () async {
+    api.remote.add(
+      Note(
+        id: 'srv',
+        text: 'From another device',
+        createdAt: DateTime(2026),
+        syncStatus: SyncStatus.synced,
+      ),
+    );
+    final repo = makeRepository();
+
+    await repo.syncPending();
+
+    final texts = (await repo.watchNotes().first).map((n) => n.text);
+    expect(texts, contains('From another device'));
+  });
 }
