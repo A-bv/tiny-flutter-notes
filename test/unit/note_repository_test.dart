@@ -97,4 +97,18 @@ void main() {
     expect(await repo.watchNotes().first, isEmpty);
     expect(api.deleted, isEmpty);
   });
+
+  test('deleteNote tombstones a synced note and hides it', () async {
+    final repo = makeRepository();
+    await repo.createNote('Buy milk');
+    await pumpEventQueue(); // uploads, so the note becomes synced
+    final synced = (await repo.watchNotes().first).single;
+    expect(synced.syncStatus, SyncStatus.synced);
+
+    connectivity.isOnline = false; // observe the tombstone before it flushes
+    await repo.deleteNote(synced);
+
+    expect(await repo.watchNotes().first, isEmpty);
+    expect(await db.pendingNotes('pendingDeletion'), hasLength(1));
+  });
 }
