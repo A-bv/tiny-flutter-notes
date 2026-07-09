@@ -21,13 +21,21 @@ class NoteRepository {
     required ConnectivityService connectivity,
   }) : _db = database,
        _api = api,
-       _connectivity = connectivity;
+       _connectivity = connectivity {
+    _connectivitySub = _connectivity.onStatusChange.listen((online) {
+      if (online) unawaited(syncPending());
+    });
+    // Sync at startup too: this restores notes after a reinstall without
+    // waiting for a user action.
+    if (_connectivity.isOnline) unawaited(syncPending());
+  }
 
   final DatabaseService _db;
   final NoteApi _api;
   final ConnectivityService _connectivity;
   final Uuid _uuid = const Uuid();
 
+  StreamSubscription<bool>? _connectivitySub;
   Future<void> _syncQueue = Future<void>.value();
   final StreamController<String?> _syncErrors =
       StreamController<String?>.broadcast();
@@ -138,6 +146,13 @@ class NoteRepository {
 
   void _report(String? message) {
     if (!_syncErrors.isClosed) _syncErrors.add(message);
+  }
+
+  /// Cancels the connectivity subscription and closes the error stream.
+  /// Called when the owning provider is disposed.
+  void dispose() {
+    unawaited(_connectivitySub?.cancel());
+    unawaited(_syncErrors.close());
   }
 
   Note _toDomain(LocalNote row) {
