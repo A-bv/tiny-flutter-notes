@@ -22,4 +22,19 @@ void main() {
       expect(makeNote(), isNot(equals(makeNote(status: SyncStatus.synced))));
     });
   });
+
+  group('Note.copyWith', () {
+    test('replaces syncStatus and keeps every other field', () {
+      final synced = makeNote().copyWith(syncStatus: SyncStatus.synced);
+
+      expect(synced.syncStatus, SyncStatus.synced);
+      expect(synced.id, makeNote().id);
+      expect(synced.text, makeNote().text);
+      expect(synced.createdAt, makeNote().createdAt);
+    });
+
+    test('returns an equal note when nothing is passed', () {
+      expect(makeNote().copyWith(), equals(makeNote()));
+    });
+  });
 }
