@@ -55,6 +55,17 @@ class NoteRepository {
     if (_connectivity.isOnline) unawaited(syncPending());
   }
 
+  /// Deletes [note].
+  ///
+  /// A note the server never saw (not yet `synced`) is dropped from the
+  /// device outright. Deleting a note the server already has is handled
+  /// later, once tombstoning is built.
+  Future<void> deleteNote(Note note) async {
+    if (note.syncStatus != SyncStatus.synced) {
+      await _db.deleteById(note.id);
+    }
+  }
+
   /// Runs one sync pass: uploads every pending note, then marks each
   /// synced locally once the server has it. Does nothing while offline.
   Future<void> syncPending() async {
