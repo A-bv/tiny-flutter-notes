@@ -12,6 +12,7 @@ environment:
 # test-first. Entries stay alphabetical to satisfy sort_pub_dependencies.
 dependencies:
   cupertino_icons: ^1.0.8
+  dio: ^5.10.0
   drift: ^2.34.0
   drift_flutter: ^0.3.0
   flutter:

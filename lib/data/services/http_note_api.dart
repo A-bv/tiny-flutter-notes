@@ -1,0 +1,28 @@
+import 'package:dio/dio.dart';
+import 'package:field_notes/data/services/note_api.dart';
+import 'package:field_notes/data/services/note_dto.dart';
+import 'package:field_notes/domain/models/note.dart';
+
+/// A [NoteApi] backed by a real HTTP server, spoken to through dio.
+///
+/// It is the production implementation behind the NoteApi seam: swap the
+/// FakeNoteApi for this by injecting an `API_URL` and nothing above the
+/// seam changes. JSON lives entirely here, via [NoteDto].
+class HttpNoteApi implements NoteApi {
+  /// Creates the client over a configured `dio` instance (base URL and
+  /// timeouts are set by the caller).
+  HttpNoteApi(this._dio);
+
+  final Dio _dio;
+
+  @override
+  Future<void> upload(Note note) async {
+    await _dio.post<void>('/notes', data: NoteDto.fromDomain(note).toJson());
+  }
+
+  @override
+  Future<void> delete(String id) => throw UnimplementedError();
+
+  @override
+  Future<List<Note>> fetchAll() => throw UnimplementedError();
+}
