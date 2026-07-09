@@ -21,4 +21,11 @@ void main() {
     expect(notes.single.text, 'Buy milk');
     expect(notes.single.syncStatus, SyncStatus.pending);
   });
+
+  test('createNote rejects blank text and stores nothing', () async {
+    final repo = makeRepository();
+
+    await expectLater(() => repo.createNote('   '), throwsArgumentError);
+    expect(await repo.watchNotes().first, isEmpty);
+  });
 }
