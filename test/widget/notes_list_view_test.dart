@@ -57,4 +57,19 @@ void main() {
       expect(find.text('No notes yet'), findsOneWidget);
     });
   });
+
+  testWidgets('tapping delete removes the note', (tester) async {
+    await withList(tester, (container) async {
+      await container.read(noteRepositoryProvider).createNote('Buy milk');
+      await container.read(noteRepositoryProvider).watchNotes().first;
+      await tester.pump();
+      expect(find.text('Buy milk'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Delete note'));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await tester.pump();
+
+      expect(find.text('Buy milk'), findsNothing);
+    });
+  });
 }
