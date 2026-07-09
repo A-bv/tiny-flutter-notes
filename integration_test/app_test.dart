@@ -39,10 +39,9 @@ void main() {
       expect(find.text('Buy milk'), findsOneWidget);
       expect(find.text('Pending sync'), findsOneWidget);
 
-      final container = ProviderScope.containerOf(
+      ProviderScope.containerOf(
         tester.element(find.byType(FieldNotesApp)),
-      );
-      container.dispose();
+      ).dispose();
       await db.close();
     });
   });
