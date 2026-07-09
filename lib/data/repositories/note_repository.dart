@@ -30,8 +30,14 @@ class NoteRepository {
 
   /// Streams all notes, newest first, mapped from database rows to the
   /// shared domain [Note]. The UI subscribes to this and nothing else.
-  Stream<List<Note>> watchNotes() =>
-      _db.watchNotes().map((rows) => rows.map(_toDomain).toList());
+  Stream<List<Note>> watchNotes() {
+    return _db.watchNotes().map(
+      (rows) => rows
+          .where((row) => row.syncStatus != SyncStatus.pendingDeletion.name)
+          .map(_toDomain)
+          .toList(),
+    );
+  }
 
   /// Creates a note from [text] and stores it locally as `pending`, so
   /// the list updates instantly. Uploading happens later, once the
@@ -61,7 +67,14 @@ class NoteRepository {
   /// device outright. Deleting a note the server already has is handled
   /// later, once tombstoning is built.
   Future<void> deleteNote(Note note) async {
-    if (note.syncStatus != SyncStatus.synced) {
+    if (note.syncStatus == SyncStatus.synced) {
+      // Keep the row as a tombstone so the sync worker can tell the
+      // server to remove it; hide it from the list right away.
+      await _db.upsert(
+        _toCompanion(note.copyWith(syncStatus: SyncStatus.pendingDeletion)),
+      );
+      if (_connectivity.isOnline) unawaited(syncPending());
+    } else {
       await _db.deleteById(note.id);
     }
   }
