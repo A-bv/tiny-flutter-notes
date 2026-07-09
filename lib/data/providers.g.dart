@@ -256,3 +256,44 @@ final class ConnectivityStatusProvider
 
 String _$connectivityStatusHash() =>
     r'ae144aa7fbbc634eabaffd117abed5ae604d15ed';
+
+/// Streams the latest background-sync error (null when the last sync was
+/// fine), so the list screen can warn the user.
+
+@ProviderFor(syncError)
+final syncErrorProvider = SyncErrorProvider._();
+
+/// Streams the latest background-sync error (null when the last sync was
+/// fine), so the list screen can warn the user.
+
+final class SyncErrorProvider
+    extends $FunctionalProvider<AsyncValue<String?>, String?, Stream<String?>>
+    with $FutureModifier<String?>, $StreamProvider<String?> {
+  /// Streams the latest background-sync error (null when the last sync was
+  /// fine), so the list screen can warn the user.
+  SyncErrorProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'syncErrorProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$syncErrorHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<String?> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<String?> create(Ref ref) {
+    return syncError(ref);
+  }
+}
+
+String _$syncErrorHash() => r'bd880513034442e46437510c0ab80dec87070f83';

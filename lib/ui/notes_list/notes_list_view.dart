@@ -18,6 +18,7 @@ class NotesListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notes = ref.watch(notesListViewModelProvider);
     final online = ref.watch(connectivityStatusProvider).value ?? true;
+    final syncError = ref.watch(syncErrorProvider).value;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Field Notes'),
@@ -34,6 +35,7 @@ class NotesListView extends ConsumerWidget {
       body: Column(
         children: [
           if (!online) const _OfflineBanner(),
+          if (syncError != null) _SyncErrorBanner(message: syncError),
           Expanded(
             child: switch (notes) {
               AsyncData(:final value) => _NotesBody(
@@ -86,6 +88,31 @@ class _ErrorState extends StatelessWidget {
           "Something went wrong loading your notes. They're safe on this "
           'device — pull to refresh or reopen the app.',
           textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+class _SyncErrorBanner extends StatelessWidget {
+  const _SyncErrorBanner({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    // A live region so a screen reader announces the failure at once.
+    return Semantics(
+      liveRegion: true,
+      child: Container(
+        width: double.infinity,
+        color: scheme.errorContainer,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: scheme.onErrorContainer),
         ),
       ),
     );

@@ -77,3 +77,10 @@ Stream<bool> connectivityStatus(Ref ref) async* {
   yield service.isOnline;
   yield* service.onStatusChange;
 }
+
+/// Streams the latest background-sync error (null when the last sync was
+/// fine), so the list screen can warn the user.
+@riverpod
+Stream<String?> syncError(Ref ref) {
+  return ref.watch(noteRepositoryProvider).syncErrors;
+}
