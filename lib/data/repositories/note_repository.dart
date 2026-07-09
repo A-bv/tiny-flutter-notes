@@ -91,6 +91,11 @@ class NoteRepository {
         _toCompanion(note.copyWith(syncStatus: SyncStatus.synced)),
       );
     }
+    final toDelete = await _db.pendingNotes(SyncStatus.pendingDeletion.name);
+    for (final row in toDelete) {
+      await _api.delete(row.id);
+      await _db.deleteById(row.id);
+    }
   }
 
   Note _toDomain(LocalNote row) {
