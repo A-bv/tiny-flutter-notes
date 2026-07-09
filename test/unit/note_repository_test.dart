@@ -111,4 +111,19 @@ void main() {
     expect(await repo.watchNotes().first, isEmpty);
     expect(await db.pendingNotes('pendingDeletion'), hasLength(1));
   });
+
+  test('syncPending flushes tombstones to the server and locally', () async {
+    final repo = makeRepository();
+    await repo.createNote('Buy milk');
+    await pumpEventQueue(); // synced and on the server
+    final synced = (await repo.watchNotes().first).single;
+
+    connectivity.isOnline = false;
+    await repo.deleteNote(synced); // tombstoned
+    connectivity.isOnline = true;
+    await repo.syncPending();
+
+    expect(api.deleted, [synced.id]);
+    expect(await db.allNotes(), isEmpty);
+  });
 }
