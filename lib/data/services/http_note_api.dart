@@ -24,5 +24,12 @@ class HttpNoteApi implements NoteApi {
   Future<void> delete(String id) => throw UnimplementedError();
 
   @override
-  Future<List<Note>> fetchAll() => throw UnimplementedError();
+  Future<List<Note>> fetchAll() async {
+    final response = await _dio.get<List<dynamic>>('/notes');
+    return (response.data ?? <dynamic>[])
+        .map(
+          (item) => NoteDto.fromJson(item as Map<String, dynamic>).toDomain(),
+        )
+        .toList();
+  }
 }
