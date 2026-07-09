@@ -22,4 +22,14 @@ void main() {
 
     expect(state, isA<AsyncData<void>>());
   });
+
+  test('save stores the note and settles to data', () async {
+    final container = makeContainer();
+
+    await container.read(noteCreateViewModelProvider.notifier).save('Buy milk');
+
+    expect(container.read(noteCreateViewModelProvider), isA<AsyncData<void>>());
+    final notes = await container.read(noteRepositoryProvider).watchNotes().first;
+    expect(notes.single.text, 'Buy milk');
+  });
 }
