@@ -30,7 +30,11 @@ class NotesListView extends ConsumerWidget {
         ],
       ),
       body: switch (notes) {
-        AsyncData(:final value) => _NotesBody(notes: value),
+        AsyncData(:final value) => _NotesBody(
+          notes: value,
+          onDelete: (note) =>
+              ref.read(notesListViewModelProvider.notifier).delete(note),
+        ),
         AsyncError() => const _ErrorState(),
         _ => const Center(child: CircularProgressIndicator()),
       },
@@ -57,9 +61,10 @@ class _ErrorState extends StatelessWidget {
 }
 
 class _NotesBody extends StatelessWidget {
-  const _NotesBody({required this.notes});
+  const _NotesBody({required this.notes, required this.onDelete});
 
   final List<Note> notes;
+  final void Function(Note note) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +75,7 @@ class _NotesBody extends StatelessWidget {
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes[index];
-        return NoteListItem(note: note, onDelete: () {});
+        return NoteListItem(note: note, onDelete: () => onDelete(note));
       },
     );
   }
