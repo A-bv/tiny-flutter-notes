@@ -50,4 +50,15 @@ void main() {
     final ids = (await db.watchNotes().first).map((r) => r.id).toList();
     expect(ids, ['b']);
   });
+
+  test('pendingNotes filters by status; allNotes returns every row', () async {
+    await db.upsert(row('a', status: 'pending'));
+    await db.upsert(row('b', status: 'synced'));
+
+    final pending = (await db.pendingNotes('pending')).map((r) => r.id);
+    expect(pending, ['a']);
+
+    final all = (await db.allNotes()).map((r) => r.id).toSet();
+    expect(all, {'a', 'b'});
+  });
 }
