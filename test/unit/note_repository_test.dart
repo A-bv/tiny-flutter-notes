@@ -72,4 +72,13 @@ void main() {
     expect(api.uploaded, isEmpty);
     expect((await onlyNote()).syncStatus, SyncStatus.pending);
   });
+
+  test('createNote triggers an upload when online', () async {
+    final repo = makeRepository();
+
+    await repo.createNote('Buy milk');
+    await pumpEventQueue();
+
+    expect(api.uploaded.single.text, 'Buy milk');
+  });
 }
