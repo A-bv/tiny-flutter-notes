@@ -96,4 +96,12 @@ void main() {
 
     expect(notes.map((n) => n.id), ['a']);
   });
+
+  test('delete DELETEs /notes/{id}', () async {
+    await api.delete('abc');
+
+    final request = recorder.requests.single;
+    expect(request.method, 'DELETE');
+    expect(request.path, '/notes/abc');
+  });
 }
