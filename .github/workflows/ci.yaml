@@ -2,14 +2,14 @@ name: CI
 
 on:
   push:
-    branches: [main, tdd-rebuild]
+    branches: [main]
   pull_request:
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Pin the Flutter version so CI and local builds never drift.
       - uses: subosito/flutter-action@v2
