@@ -17,6 +17,12 @@ background. Go offline, keep writing — changes queue and flush the moment
 you reconnect. Delete a note and it disappears at once, reconciling with
 the server later. Reinstall and your notes come back.
 
+<p align="center">
+  <img src=".github/screenshots/notes-list.png" width="280" alt="Notes list, each note synced from the server">
+  &nbsp;&nbsp;&nbsp;
+  <img src=".github/screenshots/new-note.png" width="280" alt="The new-note screen">
+</p>
+
 ## Run it
 
 ```bash
@@ -116,6 +122,10 @@ Future<void> _syncOnce() async {
 Each collaborator (the note API, connectivity) enters the codebase only
 in the cycle whose test first needs it — so the design is pulled into
 existence by the tests, not sketched up front.
+
+📖 **[Read the full build log →](docs/build-log.md)** — every commit
+classified by layer, with the framework each one introduced. It's the
+clearest way to see *how* this was built.
 
 ## Testing
 
