@@ -8,7 +8,7 @@ the full test pyramid — and nothing it doesn't. Every line was written
 **test-first**, one behavior per commit, so the git history reads as a
 step-by-step build you can follow.
 
-[![CI](https://github.com/A-bv/field-notes/actions/workflows/ci.yaml/badge.svg)](https://github.com/A-bv/field-notes/actions/workflows/ci.yaml)
+[![CI](https://github.com/A-bv/tiny-flutter-notes/actions/workflows/ci.yaml/badge.svg)](https://github.com/A-bv/tiny-flutter-notes/actions/workflows/ci.yaml)
 
 ## What it does
 

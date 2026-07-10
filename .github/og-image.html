@@ -24,6 +24,7 @@
   }
   .kicker .dots { display: inline-flex; gap: 6px; }
   .kicker .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .kicker-note { color: #6f8b82; letter-spacing: 1px; font-weight: 600; }
   .r { background: #e5484d; } .g { background: #30a46c; } .b { background: #4f83d0; }
   h1 { font-size: 92px; font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 20px; }
   h1 .accent { color: #4bbf95; }
@@ -67,10 +68,11 @@
       <div class="kicker">
         Built test-first
         <span class="dots"><span class="dot r"></span><span class="dot g"></span><span class="dot b"></span></span>
+        <span class="kicker-note">red → green → refactor</span>
       </div>
       <h1>Field <span class="accent">Notes</span></h1>
-      <div class="tag">A tiny <b>offline-first</b> notes app where every commit is a
-        <b>red&nbsp;→&nbsp;green</b> step you can follow.</div>
+      <div class="tag">A tiny <b>offline-first</b> notes app — saved on
+        device, synced to the server in the background.</div>
       <div class="chips">
         <span class="chip">Flutter</span>
         <span class="chip">Riverpod</span>
