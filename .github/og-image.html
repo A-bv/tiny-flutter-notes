@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 640px; }
+  body {
+    font-family: -apple-system, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    background:
+      radial-gradient(1200px 700px at 18% 20%, #13322a 0%, transparent 60%),
+      linear-gradient(135deg, #0b110f 0%, #0f1a16 55%, #0b1512 100%);
+    color: #e9f1ee;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .wrap { display: flex; width: 100%; height: 100%; align-items: center; padding: 0 68px; gap: 40px; }
+  .left { flex: 1; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 17px; font-weight: 700; letter-spacing: 2.5px;
+    color: #74c7a6; text-transform: uppercase; margin-bottom: 22px;
+  }
+  .kicker .dots { display: inline-flex; gap: 6px; }
+  .kicker .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .r { background: #e5484d; } .g { background: #30a46c; } .b { background: #4f83d0; }
+  h1 { font-size: 92px; font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 20px; }
+  h1 .accent { color: #4bbf95; }
+  .tag { font-size: 27px; line-height: 1.35; color: #b7c7c1; font-weight: 400; max-width: 560px; margin-bottom: 30px; }
+  .tag b { color: #e9f1ee; font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; }
+  .chip {
+    font-size: 19px; font-weight: 600; color: #cfe6dd;
+    background: rgba(74, 158, 132, 0.16);
+    border: 1px solid rgba(107, 199, 166, 0.35);
+    padding: 9px 18px; border-radius: 999px;
+  }
+  /* phone mock */
+  .phone {
+    width: 340px; height: 540px; flex-shrink: 0;
+    background: #0e1613; border: 2px solid #26362f; border-radius: 46px;
+    padding: 20px 16px; box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .phone .title { text-align: center; font-size: 22px; font-weight: 700; margin: 10px 0 6px; }
+  .card {
+    display: flex; align-items: center; gap: 14px;
+    background: #1a2621; border-radius: 18px; padding: 14px 16px;
+  }
+  .avatar {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+    background: #2e6b57; display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .card .body { display: flex; flex-direction: column; gap: 7px; }
+  .card .note { font-size: 18px; color: #eaf2ef; font-weight: 500; }
+  .pill {
+    align-self: flex-start; font-size: 13px; font-weight: 600; color: #b7e6d2;
+    background: rgba(80, 170, 130, 0.22); padding: 3px 11px; border-radius: 999px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="left">
+      <div class="kicker">
+        Built test-first
+        <span class="dots"><span class="dot r"></span><span class="dot g"></span><span class="dot b"></span></span>
+      </div>
+      <h1>Field <span class="accent">Notes</span></h1>
+      <div class="tag">A tiny <b>offline-first</b> notes app where every commit is a
+        <b>red&nbsp;→&nbsp;green</b> step you can follow.</div>
+      <div class="chips">
+        <span class="chip">Flutter</span>
+        <span class="chip">Riverpod</span>
+        <span class="chip">Drift</span>
+        <span class="chip">dio</span>
+        <span class="chip">TDD</span>
+      </div>
+    </div>
+    <div class="phone">
+      <div class="title">Field Notes</div>
+      <div class="card">
+        <div class="avatar">🗒️</div>
+        <div class="body"><div class="note">Buy milk on the way</div><div class="pill">☁ Synced</div></div>
+      </div>
+      <div class="card">
+        <div class="avatar">🗒️</div>
+        <div class="body"><div class="note">Pulled over real HTTP</div><div class="pill">☁ Synced</div></div>
+      </div>
+      <div class="card">
+        <div class="avatar">🗒️</div>
+        <div class="body"><div class="note">Draft — offline</div><div class="pill">⟳ Pending sync</div></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,12 +1,14 @@
 # Field Notes — a tiny offline-first notes app, built test-first
 
+![Field Notes](.github/field-notes-og.png)
+
 A deliberately small Flutter app that does everything a real app does —
 offline storage, background sync, networking, theming, accessibility,
 the full test pyramid — and nothing it doesn't. Every line was written
 **test-first**, one behavior per commit, so the git history reads as a
 step-by-step build you can follow.
 
-![CI](https://github.com/A-bv/field_notes/actions/workflows/ci.yaml/badge.svg)
+[![CI](https://github.com/A-bv/field-notes/actions/workflows/ci.yaml/badge.svg)](https://github.com/A-bv/field-notes/actions/workflows/ci.yaml)
 
 ## What it does
 

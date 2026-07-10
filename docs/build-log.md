@@ -6,6 +6,10 @@ matters — the popular Flutter framework it introduced.
 
 If you only read one doc to judge *how* this was made, read this one.
 
+> Commit names below are a snapshot of the history as of **2026-07-10**.
+> They describe the intent of each step; if the branch is ever rebased,
+> read them as the story, not as exact hashes.
+
 ---
 
 ## The commit rhythm
