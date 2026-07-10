@@ -8,7 +8,14 @@ the full test pyramid — and nothing it doesn't. Every line was written
 **test-first**, one behavior per commit, so the git history reads as a
 step-by-step build you can follow.
 
-[![CI](https://github.com/A-bv/tiny-flutter-notes/actions/workflows/ci.yaml/badge.svg)](https://github.com/A-bv/tiny-flutter-notes/actions/workflows/ci.yaml)
+<p align="center">
+  <a href="https://github.com/A-bv/tiny-flutter-notes/actions/workflows/ci.yaml"><img src="https://github.com/A-bv/tiny-flutter-notes/actions/workflows/ci.yaml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/Flutter-3.44-02569B?logo=flutter&logoColor=white" alt="Flutter 3.44">
+  <img src="https://img.shields.io/badge/platform-iOS%20%7C%20Android-8A8A8A" alt="Platform iOS | Android">
+  <img src="https://img.shields.io/badge/coverage-%E2%89%A585%25-2ea043" alt="Coverage at least 85 percent">
+  <a href="https://pub.dev/packages/very_good_analysis"><img src="https://img.shields.io/badge/style-very__good__analysis-B22C89" alt="style: very good analysis"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-informational" alt="License: MIT"></a>
+</p>
 
 ## What it does
 
