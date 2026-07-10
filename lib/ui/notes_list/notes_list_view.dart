@@ -128,9 +128,28 @@ class _NotesBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (notes.isEmpty) {
-      return const Center(child: Text('No notes yet'));
+      final scheme = Theme.of(context).colorScheme;
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.edit_note, size: 72, color: scheme.primary),
+            const SizedBox(height: 12),
+            Text(
+              'No notes yet',
+              style: TextStyle(fontSize: 18, color: scheme.onSurface),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Tap + to write your first one',
+              style: TextStyle(color: scheme.onSurfaceVariant),
+            ),
+          ],
+        ),
+      );
     }
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes[index];
